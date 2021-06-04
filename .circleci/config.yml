@@ -1,3 +1,4 @@
+
 version: 2
 jobs:
   test:
@@ -5,7 +6,7 @@ jobs:
       image: circleci/classic:201808-01
       docker_layer_caching: true
     working_directory: ~/repo
-          
+
     steps:
       - checkout
       - run:
@@ -22,45 +23,45 @@ jobs:
             sudo apt-get install python3.5
             sleep 5
             python -m pip install -r requirements.txt
-        
+
       # run tests!
       # this example uses Django's built-in test-runner
       # other common Python testing frameworks include pytest and nose
       # https://pytest.org
       # https://nose.readthedocs.io
-     
+
       - run:
           name: run tests
           command: |
-            python -m pytest tests/test_rsvpapp.py  
+            python -m pytest tests/test_rsvpapp.py
 
   build:
-  
+
     machine:
       image: circleci/classic:201808-01
       docker_layer_caching: true
     working_directory: ~/repo
-          
+
     steps:
-      - checkout 
+      - checkout
       - run:
           name: build image
           command: |
             docker build -t $DOCKERHUB_USERNAME/rsvpapp:$CIRCLE_SHA1 .
- 
+
   push:
     machine:
       image: circleci/classic:201808-01
       docker_layer_caching: true
     working_directory: ~/repo
     steps:
-      - checkout 
+      - checkout
       - run:
           name: Push image
           command: |
             docker build -t $DOCKERHUB_USERNAME/rsvpapp:$CIRCLE_SHA1 .
             echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
-            docker push $DOCKERHUB_USERNAME/rsvpapp:$CIRCLE_SHA1	
+            docker push $DOCKERHUB_USERNAME/rsvpapp:$CIRCLE_SHA1
 
 workflows:
   version: 2
@@ -70,9 +71,9 @@ workflows:
           context: DOCKERHUB
           filters:
             branches:
-              only: dev        
+              only: dev
       - build:
-          context: DOCKERHUB 
+          context: DOCKERHUB
           requires:
             - test
           filters:
